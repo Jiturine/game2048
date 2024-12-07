@@ -47,9 +47,7 @@ template <class T>
 void List<T>::Insert(T data, int index)
 {
 	if (index > size)
-	{
 		return;
-	}
 	Node *p = head;
 	for (int i = 1; i <= index; i++)
 	{
