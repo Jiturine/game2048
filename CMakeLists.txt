@@ -42,6 +42,10 @@ target_include_directories ( game2048 PUBLIC
     ${src_header_dirs}
     ${CMAKE_CURRENT_SOURCE_DIR}/sysconfig
     )
+if(MSVC)
+    target_link_libraries(game2048 glfw3 OpenGL32)
+elseif(MINGW)
+    target_link_libraries(game2048 libglfw3.a OpenGL32)
+endif()
 
-target_link_libraries(game2048 libglfw3.a OpenGL32)
 
