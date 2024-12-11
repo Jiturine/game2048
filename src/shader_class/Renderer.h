@@ -6,6 +6,6 @@
 
 class Renderer
 {
-public:
+  public:
 	void Draw(const VertexArray &vertexArray, const IndexBuffer &inderBuffer, const Shader &shader) const;
 };

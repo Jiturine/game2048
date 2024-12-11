@@ -3,7 +3,7 @@
 
 class IndexBuffer
 {
-public:
+  public:
 	unsigned int rendererID;
 	unsigned int count;
 	IndexBuffer(const void *data, unsigned int count);

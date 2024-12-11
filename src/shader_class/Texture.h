@@ -6,7 +6,7 @@
 
 class Texture
 {
-public:
+  public:
 	unsigned int rendererID;
 	Texture(const std::string &path);
 	~Texture();

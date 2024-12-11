@@ -4,14 +4,14 @@
 
 class VertexBufferLayout
 {
-public:
+  public:
 	VertexBufferLayout();
 	template <typename T>
 	void Push(unsigned int count);
 
 	class VertexBufferElement
 	{
-	public:
+	  public:
 		VertexBufferElement(unsigned int type, unsigned int count, bool normalized);
 		unsigned int type;
 		unsigned int count;

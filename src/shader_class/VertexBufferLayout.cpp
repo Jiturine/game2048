@@ -1,6 +1,7 @@
 #include "VertexBufferLayout.h"
 
-VertexBufferLayout::VertexBufferLayout() : stride(0) {}
+VertexBufferLayout::VertexBufferLayout()
+	: stride(0) {}
 
 VertexBufferLayout::VertexBufferElement::VertexBufferElement(unsigned int type, unsigned int count, bool normalized)
 	: type(type), count(count), normalized(normalized) {}

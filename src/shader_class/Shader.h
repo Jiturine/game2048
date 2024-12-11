@@ -11,7 +11,7 @@
 
 class Shader
 {
-public:
+  public:
 	unsigned int rendererID;
 	enum class ShaderType
 	{
@@ -28,7 +28,7 @@ public:
 	void SetUniform(const std::string &name, int count, int *array);
 	int GetUniformLocation(const std::string &name);
 
-private:
+  private:
 	unsigned int vertexShader;
 	unsigned int fragmentShader;
 	std::unordered_map<std::string, int> uniformLocationCache;

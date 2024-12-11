@@ -1,9 +1,10 @@
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include <iostream>
 #include "List.h"
-#include "ScoreManager.h"
 #include "Renderer.h"
+#include "ScoreManager.h"
+#include <GLFW/glfw3.h>
+#include <glad/glad.h>
+#include <iostream>
+#include "Game.h"
 
 constexpr unsigned int SCREEN_WIDTH = 1920;
 constexpr unsigned int SCREEN_HEIGHT = 1080;
@@ -11,6 +12,7 @@ const char *SCREEN_NAME = "game2048";
 
 int main()
 {
+#if 0
 	List<int> list;
 	ScoreManager::rankList.Add(ScoreManager::ScoreInfo(4, "name1"),
 							   ScoreManager::ScoreInfo(2, "name2"),
@@ -65,5 +67,12 @@ int main()
 		glfwPollEvents();
 	}
 	glfwTerminate();
+#endif
+	Game::Init();
+	while (!Game::gameOver)
+	{
+		Game::Print();
+		Game::Update();
+	}
 	return 0;
 }
