@@ -20,3 +20,12 @@ public:
 private:
     static int *tempposit[3];
 };
+class viewing
+{
+public:
+    static void display(int *inn[4][4][4], int surface);
+    static void changesurface();
+
+private:
+    static int face;
+};

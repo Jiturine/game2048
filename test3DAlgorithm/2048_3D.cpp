@@ -1,4 +1,5 @@
 #include "2048_3D.h"
+#include "Game.h"
 using namespace std;
 
 random_device rd;
@@ -273,7 +274,77 @@ void movement::positrander(int *inn[4][4][4])
     *movement::tempposit = rett;
 } // random positioner
 
-void movement::spawn(int *inn[len][len][len], int loca[3])
+void movement::spawn(int *inn[4][4][4], int loca[3])
 {
     *inn[loca[0]][loca[1]][loca[2]] = 2 * ((int(gene()) % 2) + 1);
+}
+
+void viewing::display(int *inn[4][4][4], int surface)
+{
+    system("cls");
+    switch (surface)
+    {
+    case 1:
+    {
+        for (int z = 3; z >= 0; z--)
+        {
+            for (int x = 0; x < 4; x++)
+                printf("%4d     ", inn[z][0][x]);
+            putchar('\n');
+        }
+        break;
+    }
+    case 2:
+    {
+        for (int z = 3; z >= 0; z--)
+        {
+            for (int x = 3; x >= 0; x--)
+                printf("%4d     ", inn[z][0][x]);
+            putchar('\n');
+        }
+        break;
+    }
+
+    case 3:
+    {
+        for (int z = 3; z >= 0; z--)
+        {
+            for (int y = 3; y >= 0; y--)
+                printf("%4d     ", inn[z][y][0]);
+            putchar('\n');
+        }
+        break;
+    }
+    case 4:
+    {
+        for (int z = 3; z >= 0; z--)
+        {
+            for (int y = 0; y < 4; y++)
+                printf("%4d     ", inn[z][y][3]);
+            putchar('\n');
+        }
+        break;
+    }
+    case 5:
+    {
+        for (int y = 0; y < 4; y++)
+        {
+            for (int x = 0; x < 4; x++)
+                printf("%4d     ", inn[0][y][x]);
+            putchar('\n');
+        }
+        break;
+    }
+    case 6:
+    {
+        for (int y = 3; y >= 0; y--)
+        {
+            for (int x = 0; x < 4; x++)
+                printf("%4d     ", inn[3][y][x]);
+            putchar('\n');
+        }
+        break;
+    }
+    }
+    printf("\nCurrent Score:  %d", Game::score);
 }

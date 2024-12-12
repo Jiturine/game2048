@@ -32,3 +32,5 @@
 /.vscode
 /build
 .clang-format
+/.vs
+/out
