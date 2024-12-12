@@ -27,6 +27,10 @@ void Shader::SetUniform(const std::string &name, int value)
 {
 	glUniform1i(GetUniformLocation(name), value);
 }
+void Shader::SetUniform(const std::string &name, glm::vec3 vector)
+{
+	glUniform3f(GetUniformLocation(name), vector.x, vector.y, vector.z);
+}
 void Shader::SetUniform(const std::string &name, glm::mat4 matrix)
 {
 	glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, &matrix[0][0]);
@@ -44,7 +48,7 @@ int Shader::GetUniformLocation(const std::string &name)
 	int location = glGetUniformLocation(rendererID, name.c_str());
 	if (location == -1)
 	{
-		std::cout << "WARNING: Uniform '" << name << "' doesn't exist!" << std::endl;
+		LOG_WARN("Uniform '{}' doesn't exist!", name);
 	}
 	uniformLocationCache[name] = location;
 	return location;
@@ -90,12 +94,12 @@ void Shader::CompileShader(unsigned int shader, ShaderType shaderType)
 		glGetShaderInfoLog(shader, 512, NULL, infoLog);
 		if (shaderType == ShaderType::VERTEX)
 		{
-			std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED" << std::endl;
+			LOG_ERROR("Vertex shader compilation failed!");
 		}
 		else if (shaderType == ShaderType::FRAGMENT)
 		{
-			std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED" << std::endl;
+			LOG_ERROR("Fragment shader compilation failed!");
 		}
-		std::cout << infoLog << std::endl;
+		LOG_ERROR(infoLog);
 	};
 }

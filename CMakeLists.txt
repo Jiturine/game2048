@@ -17,6 +17,7 @@ configure_file (
   )
 
 link_directories(${CMAKE_CURRENT_SOURCE_DIR}/deps/opengl/libs)
+link_directories(${CMAKE_CURRENT_SOURCE_DIR}/deps/freetype/lib)
 
 add_executable (game2048 ${PIXEL_FILES})
 
@@ -39,13 +40,19 @@ collect_head_dirs( src_header_dirs )
 
 target_include_directories ( game2048 PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/deps/opengl/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/deps/freetype/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/deps/spdlog/include
     ${src_header_dirs}
     ${CMAKE_CURRENT_SOURCE_DIR}/sysconfig
     )
+
+find_package(Freetype REQUIRED)
+include_directories(${FREETYPE_INCLUDE_DIRS})
+    
 if(MSVC)
-    target_link_libraries(game2048 glfw3 OpenGL32)
+    target_link_libraries(game2048 glfw3 OpenGL32) 
 elseif(MINGW)
     target_link_libraries(game2048 libglfw3.a OpenGL32)
 endif()
-
+target_link_libraries(game2048 ${FREETYPE_LIBRARIES})
 
