@@ -4,6 +4,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "Text.h"
+#include "Rectangle.h"
+#include "Game.h"
 
 class OpenGL
 {
@@ -15,6 +17,7 @@ class OpenGL
 	static void Update();
 	static bool ShouldClose();
 	static void Terminate();
+	static bool GetKeyDown(char key);
 
   private:
 	static GLFWwindow *window;

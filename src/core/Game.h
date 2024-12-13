@@ -4,6 +4,7 @@
 #include <random>
 #include <iostream>
 #include <iomanip>
+#include "OpenGL.h"
 
 class Game
 {
@@ -15,9 +16,11 @@ class Game
 	static int grid[SIZE][SIZE];
 	static int score;
 	static bool gameOver;
+	static void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mods);
 
   private:
 	Game() {};
 	static void Revolve();
 	static void Compress();
+	static char inputKey;
 };

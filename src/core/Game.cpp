@@ -6,12 +6,34 @@ void Game::Init()
 	srand(time(nullptr));
 }
 
+void Game::KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mods)
+{
+	if (action == GLFW_PRESS)
+	{
+		if (key == GLFW_KEY_W)
+		{
+			inputKey = 'w';
+		}
+		else if (key == GLFW_KEY_S)
+		{
+			inputKey = 's';
+		}
+		else if (key == GLFW_KEY_A)
+		{
+			inputKey = 'a';
+		}
+		else if (key == GLFW_KEY_D)
+		{
+			inputKey = 'd';
+		}
+	}
+}
+
 void Game::Update()
 {
-	char inputKey = _getch();
-	if (inputKey != 'w' && inputKey != 's' && inputKey != 'a' && inputKey != 'd')
+	if (!inputKey)
 		return;
-	std::cout << inputKey << std::endl;
+	LOG_INFO("{}", inputKey);
 	// 记录操作前的状态
 	static int record[SIZE][SIZE];
 	for (int i = 1; i <= 4; i++)
@@ -78,6 +100,7 @@ void Game::Update()
 	{
 		gameOver = true;
 	}
+	inputKey = 0;
 }
 
 // 顺时针旋转90度
@@ -129,3 +152,4 @@ bool Game::gameOver = false;
 
 int Game::grid[SIZE][SIZE];
 int Game::score;
+char Game::inputKey;

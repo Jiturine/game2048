@@ -22,8 +22,12 @@ void OpenGL::Init(const unsigned int &screenWidth, const unsigned int &screenHei
 	// 启用混合
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	// 取消粘滞键
+	glfwSetInputMode(window, GLFW_STICKY_KEYS, GLFW_FALSE);
+	glfwSetKeyCallback(window, Game::KeyCallback);
 	// 文字投影矩阵设置
 	Text::Init(screenWidth, screenHeight);
+	Rectangle::Init(screenWidth, screenHeight);
 }
 
 void OpenGL::Update()
@@ -40,4 +44,17 @@ bool OpenGL::ShouldClose()
 void OpenGL::Terminate()
 {
 	glfwTerminate();
+}
+
+bool OpenGL::GetKeyDown(char key)
+{
+	if (key == 'w')
+		return glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS;
+	if (key == 's')
+		return glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS;
+	if (key == 'a')
+		return glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS;
+	if (key == 'd')
+		return glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS;
+	return false;
 }

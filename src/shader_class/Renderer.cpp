@@ -1,6 +1,6 @@
 #include "Renderer.h"
 
-void Renderer::Draw(const VertexArray &vertexArray, const IndexBuffer &inderBuffer, const Shader &shader) const
+void Renderer::Draw(const VertexArray &vertexArray, const IndexBuffer &inderBuffer, const Shader &shader)
 {
 	vertexArray.Bind();
 	inderBuffer.Bind();

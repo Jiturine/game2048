@@ -5,8 +5,10 @@
 #include "VertexArray.h"
 #include "Shader.h"
 
+class VertexArray;
+
 class Renderer
 {
   public:
-	void Draw(const VertexArray &vertexArray, const IndexBuffer &inderBuffer, const Shader &shader) const;
+	static void Draw(const VertexArray &vertexArray, const IndexBuffer &inderBuffer, const Shader &shader);
 };
