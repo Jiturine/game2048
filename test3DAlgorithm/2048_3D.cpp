@@ -47,7 +47,6 @@ void movement::xpp(int *inn[4][4][4])
         }
     }
 } // X scale==1, Y scale==0, Z scale==0 -- movement code==1
-
 void movement::xmm(int *inn[4][4][4])
 {
     int lastposit;
@@ -130,7 +129,6 @@ void movement::ypp(int *inn[4][4][4])
         }
     }
 } // X scale==0, Y scale==1, Z scale==0 -- movement code==2
-
 void movement::ymm(int *inn[4][4][4])
 {
     int lastposit;
@@ -213,7 +211,6 @@ void movement::zpp(int *inn[4][4][4])
         }
     }
 }
-
 void movement::zmm(int *inn[4][4][4])
 {
     int lastposit;
@@ -255,6 +252,7 @@ void movement::zmm(int *inn[4][4][4])
         }
     }
 }
+
 void movement::positrander(int *inn[4][4][4])
 {
     int rett[3];
@@ -277,7 +275,7 @@ void movement::positrander(int *inn[4][4][4])
 void movement::spawn(int *inn[4][4][4], int loca[3])
 {
     *inn[loca[0]][loca[1]][loca[2]] = 2 * ((int(gene()) % 2) + 1);
-}
+} // to add: spawn multiple nums based on vacances
 
 void viewing::display(int *inn[4][4][4], int surface)
 {
@@ -347,4 +345,244 @@ void viewing::display(int *inn[4][4][4], int surface)
     }
     }
     printf("\nCurrent Score:  %d", Game::score);
+}
+
+int changesurface(char inputcode, int surface, int visscale)
+{
+    switch (inputcode)
+    {
+    case 'W':
+        if (surface == 1 || surface == 2)
+            switch (visscale)
+            {
+            case 3:
+                return 6;
+            case 6:
+                return 5;
+            case 1:
+                return 4;
+            case 4:
+                return 3;
+            }
+        if (surface == 5 || surface == 6)
+            switch (visscale)
+            {
+            case 1:
+                return 4;
+            case 4:
+                return 3;
+            case 2:
+                return 2;
+            case 5:
+                return 1;
+            }
+        if (surface == 3 || surface == 4)
+            switch (visscale)
+            {
+            case 3:
+                return 6;
+            case 6:
+                return 5;
+            case 2:
+                return 2;
+            case 5:
+                return 1;
+            }
+    case 'S':
+        if (surface == 1 || surface == 2)
+            switch (visscale)
+            {
+            case 3:
+                return 5;
+            case 6:
+                return 6;
+            case 1:
+                return 3;
+            case 4:
+                return 4;
+            }
+        if (surface == 5 || surface == 6)
+            switch (visscale)
+            {
+            case 1:
+                return 3;
+            case 4:
+                return 4;
+            case 2:
+                return 1;
+            case 5:
+                return 2;
+            }
+        if (surface == 3 || surface == 4)
+            switch (visscale)
+            {
+            case 3:
+                return 5;
+            case 6:
+                return 6;
+            case 2:
+                return 1;
+            case 5:
+                return 2;
+            }
+    case 'A':
+        switch (visscale)
+        {
+        case 1:
+            switch (surface)
+            {
+            case 1:
+                return 6;
+            case 2:
+                return 5;
+            case 5:
+                return 1;
+            case 6:
+                return 2;
+            }
+        case 4:
+            switch (surface)
+            {
+            case 1:
+                return 5;
+            case 2:
+                return 6;
+            case 5:
+                return 2;
+            case 6:
+                return 1;
+            }
+        case 2:
+            switch (surface)
+            {
+            case 3:
+                return 5;
+
+            case 4:
+                return 6;
+            case 5:
+                return 4;
+            case 6:
+                return 3;
+            }
+        case 5:
+            switch (surface)
+            {
+            case 3:
+                return 6;
+            case 4:
+                return 5;
+            case 5:
+                return 3;
+            case 6:
+                return 4;
+            }
+        case 3:
+            switch (surface)
+            {
+            case 1:
+                return 3;
+            case 2:
+                return 4;
+            case 3:
+                return 2;
+            case 4:
+                return 1;
+            }
+        case 6:
+            switch (surface)
+            {
+            case 1:
+                return 4;
+            case 2:
+                return 3;
+            case 3:
+                return 1;
+            case 4:
+                return 2;
+            }
+        }
+    case 'D':
+        switch (visscale)
+        {
+        case 4:
+            switch (surface)
+            {
+            case 1:
+                return 6;
+            case 2:
+                return 5;
+            case 5:
+                return 1;
+            case 6:
+                return 2;
+            }
+        case 1:
+            switch (surface)
+            {
+            case 1:
+                return 5;
+            case 2:
+                return 6;
+            case 5:
+                return 2;
+            case 6:
+                return 1;
+            }
+        case 5:
+            switch (surface)
+            {
+            case 3:
+                return 5;
+
+            case 4:
+                return 6;
+            case 5:
+                return 4;
+            case 6:
+                return 3;
+            }
+        case 2:
+            switch (surface)
+            {
+            case 3:
+                return 6;
+            case 4:
+                return 5;
+            case 5:
+                return 3;
+            case 6:
+                return 4;
+            }
+        case 6:
+            switch (surface)
+            {
+            case 1:
+                return 3;
+            case 2:
+                return 4;
+            case 3:
+                return 2;
+            case 4:
+                return 1;
+            }
+        case 3:
+            switch (surface)
+            {
+            case 1:
+                return 4;
+            case 2:
+                return 3;
+            case 3:
+                return 1;
+            case 4:
+                return 2;
+            }
+        }
+    }
+} // visscale has the same rule with operationscale code
+// x++ --1, y++ --2, z++ --3,x-- --4,y-- --5, z-- --6
+
+void viewing::scaleshift(int viscale, int surface) // relative operation feature
+{
 }

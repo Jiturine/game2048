@@ -24,8 +24,11 @@ class viewing
 {
 public:
     static void display(int *inn[4][4][4], int surface);
-    static void changesurface();
+    static int changesurface(char inputcode, int surface, int visscale);
+    static void scaleshift(int visscale, int surface);
+    static int switchscale(int loc[3]);
 
 private:
     static int face;
+    static int viewscale;
 };
