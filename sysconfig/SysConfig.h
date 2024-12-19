@@ -2,4 +2,4 @@
 
 #define SYSTEM_NAME "Windows"
 
-#define PATH "E:/Workspace/game2048"
+#define PATH "F:/GitVaults/local/game2048"

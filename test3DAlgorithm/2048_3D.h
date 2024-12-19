@@ -32,3 +32,13 @@ private:
     static int face;
     static int viewscale;
 };
+class pivotchoose
+{
+public:
+    static int dotproduct3D(int Va[3], int Vb[3]);
+    static int pivotface(int dpi, int dpj, int dpk);
+    static int *bubbledot(int *to_sort, int halflen);
+
+private:
+    static int currentPivotface;
+};

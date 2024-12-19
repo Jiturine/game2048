@@ -347,242 +347,70 @@ void viewing::display(int *inn[4][4][4], int surface)
     printf("\nCurrent Score:  %d", Game::score);
 }
 
-int changesurface(char inputcode, int surface, int visscale)
+int pivotchoose::dotproduct3D(int Va[3], int Vb[3])
 {
-    switch (inputcode)
+    int rett = 0;
+    for (int i = 0; i < 3; i++)
     {
-    case 'W':
-        if (surface == 1 || surface == 2)
-            switch (visscale)
-            {
-            case 3:
-                return 6;
-            case 6:
-                return 5;
-            case 1:
-                return 4;
-            case 4:
-                return 3;
-            }
-        if (surface == 5 || surface == 6)
-            switch (visscale)
-            {
-            case 1:
-                return 4;
-            case 4:
-                return 3;
-            case 2:
-                return 2;
-            case 5:
-                return 1;
-            }
-        if (surface == 3 || surface == 4)
-            switch (visscale)
-            {
-            case 3:
-                return 6;
-            case 6:
-                return 5;
-            case 2:
-                return 2;
-            case 5:
-                return 1;
-            }
-    case 'S':
-        if (surface == 1 || surface == 2)
-            switch (visscale)
-            {
-            case 3:
-                return 5;
-            case 6:
-                return 6;
-            case 1:
-                return 3;
-            case 4:
-                return 4;
-            }
-        if (surface == 5 || surface == 6)
-            switch (visscale)
-            {
-            case 1:
-                return 3;
-            case 4:
-                return 4;
-            case 2:
-                return 1;
-            case 5:
-                return 2;
-            }
-        if (surface == 3 || surface == 4)
-            switch (visscale)
-            {
-            case 3:
-                return 5;
-            case 6:
-                return 6;
-            case 2:
-                return 1;
-            case 5:
-                return 2;
-            }
-    case 'A':
-        switch (visscale)
+        rett += Va[i] * Vb[i];
+    }
+    return rett;
+}
+int pivotchoose::pivotface(int dpi, int dpj, int dpk) // 每tick执行
+{
+    int *temp = new int[6];
+    *temp = dpi;
+    temp[1] = dpj;
+    temp[2] = dpk;
+    temp[3] = 1;
+    temp[4] = 2;
+    temp[5] = 3; // 赋值,前半区数值域，后半区维度域
+    bubbledot(temp, 3);
+    int resbase = 0;
+    if (temp[2] > temp[1])
+        resbase = temp[5];
+    switch (temp[5])
+    {
+    case 1:
+        resbase *= -(dpi / temp[2]);
+        break;
+    case 2:
+        resbase *= -(dpj / temp[2]);
+        break;
+    case 3:
+        resbase *= -(dpk / temp[2]);
+        break;
+    }
+    delete temp;
+    if (resbase == 0 || resbase == pivotchoose::currentPivotface)
+        return 0;
+    else
+        return resbase; // 在主面切换函数当中仅在主面更新时返回非零值
+}
+int *pivotchoose::bubbledot(int *to_sort, int halflen) // 冒泡，双域协同
+{
+    int temp1, temp2;
+    bool changed = false;
+    for (int i = 0; i < halflen - 1; i++)
+    {
+        for (int p = 0; p < halflen - 1; p++)
         {
-        case 1:
-            switch (surface)
+            changed = false;
+            if (to_sort[p] > to_sort[p + 1])
             {
-            case 1:
-                return 6;
-            case 2:
-                return 5;
-            case 5:
-                return 1;
-            case 6:
-                return 2;
-            }
-        case 4:
-            switch (surface)
-            {
-            case 1:
-                return 5;
-            case 2:
-                return 6;
-            case 5:
-                return 2;
-            case 6:
-                return 1;
-            }
-        case 2:
-            switch (surface)
-            {
-            case 3:
-                return 5;
-
-            case 4:
-                return 6;
-            case 5:
-                return 4;
-            case 6:
-                return 3;
-            }
-        case 5:
-            switch (surface)
-            {
-            case 3:
-                return 6;
-            case 4:
-                return 5;
-            case 5:
-                return 3;
-            case 6:
-                return 4;
-            }
-        case 3:
-            switch (surface)
-            {
-            case 1:
-                return 3;
-            case 2:
-                return 4;
-            case 3:
-                return 2;
-            case 4:
-                return 1;
-            }
-        case 6:
-            switch (surface)
-            {
-            case 1:
-                return 4;
-            case 2:
-                return 3;
-            case 3:
-                return 1;
-            case 4:
-                return 2;
+                temp1 = to_sort[p];
+                to_sort[p] = to_sort[p + 1];
+                to_sort[p + 1] = temp1;
+                temp2 = to_sort[halflen + p];
+                to_sort[halflen + p] = to_sort[halflen + p + 1];
+                to_sort[halflen + p + 1] = temp1;
+                changed = true;
             }
         }
-    case 'D':
-        switch (visscale)
+        if (!changed)
         {
-        case 4:
-            switch (surface)
-            {
-            case 1:
-                return 6;
-            case 2:
-                return 5;
-            case 5:
-                return 1;
-            case 6:
-                return 2;
-            }
-        case 1:
-            switch (surface)
-            {
-            case 1:
-                return 5;
-            case 2:
-                return 6;
-            case 5:
-                return 2;
-            case 6:
-                return 1;
-            }
-        case 5:
-            switch (surface)
-            {
-            case 3:
-                return 5;
-
-            case 4:
-                return 6;
-            case 5:
-                return 4;
-            case 6:
-                return 3;
-            }
-        case 2:
-            switch (surface)
-            {
-            case 3:
-                return 6;
-            case 4:
-                return 5;
-            case 5:
-                return 3;
-            case 6:
-                return 4;
-            }
-        case 6:
-            switch (surface)
-            {
-            case 1:
-                return 3;
-            case 2:
-                return 4;
-            case 3:
-                return 2;
-            case 4:
-                return 1;
-            }
-        case 3:
-            switch (surface)
-            {
-            case 1:
-                return 4;
-            case 2:
-                return 3;
-            case 3:
-                return 1;
-            case 4:
-                return 2;
-            }
+            break;
         }
     }
-} // visscale has the same rule with operationscale code
-// x++ --1, y++ --2, z++ --3,x-- --4,y-- --5, z-- --6
-
-void viewing::scaleshift(int viscale, int surface) // relative operation feature
-{
+    return to_sort;
 }
