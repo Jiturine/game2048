@@ -10,6 +10,7 @@ bool OpenGL::mouseDragging;
 float OpenGL::yaw;
 float OpenGL::pitch;
 glm::vec3 OpenGL::cameraPosition;
+glm::mat4 OpenGL::rotationMatrix = glm::mat4(1.0f);
 
 void OpenGL::Init(const unsigned int &screenWidth, const unsigned int &screenHeight, const std::string &windowName)
 {
@@ -33,7 +34,7 @@ void OpenGL::Init(const unsigned int &screenWidth, const unsigned int &screenHei
 	// 设置摄像机位置
 	cameraPosition = glm::vec3(0.0f, 0.0f, 10.0f);
 	// 设置回调
-	glfwSetKeyCallback(window, Game::KeyCallback);
+	glfwSetKeyCallback(window, Game3D::KeyCallback);
 	glfwSetCursorPosCallback(window, MouseCallBack);
 	glfwSetMouseButtonCallback(window, MouseButtonCallback);
 	// 文字投影矩阵设置
@@ -57,36 +58,27 @@ void OpenGL::Terminate()
 {
 	glfwTerminate();
 }
-
-bool OpenGL::GetKeyDown(char key)
-{
-	if (key == 'w')
-		return glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS;
-	if (key == 's')
-		return glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS;
-	if (key == 'a')
-		return glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS;
-	if (key == 'd')
-		return glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS;
-	return false;
-}
-
 void OpenGL::MouseCallBack(GLFWwindow *window, double xpos, double ypos)
 {
 	if (!mouseDragging)
 		return;
 
 	float xoffset = xpos - lastX;
-	float yoffset = lastY - ypos; // 反向移动y轴
+	float yoffset = ypos - lastY;
 	lastX = xpos;
 	lastY = ypos;
 
-	float sensitivity = 0.1f; // 控制灵敏度
+	float sensitivity = 0.05f; // 控制灵敏度
 	xoffset *= sensitivity;
 	yoffset *= sensitivity;
 
 	yaw += xoffset;
 	pitch += yoffset;
+
+	glm::mat4 mat(1.0f);
+	mat = glm::rotate(mat, xoffset * sensitivity, glm::vec3(0.0f, 1.0f, 0.0f));
+	mat = glm::rotate(mat, yoffset * sensitivity, glm::vec3(1.0f, 0.0f, 0.0f));
+	rotationMatrix = mat * rotationMatrix;
 }
 
 void OpenGL::MouseButtonCallback(GLFWwindow *window, int button, int action, int mods)

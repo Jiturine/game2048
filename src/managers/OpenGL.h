@@ -6,7 +6,7 @@
 #include "Text.h"
 #include "Rectangle.h"
 #include "Cube.h"
-#include "Game.h"
+#include "Game3D.h"
 
 class OpenGL
 {
@@ -18,12 +18,12 @@ class OpenGL
 	static void Update();
 	static bool ShouldClose();
 	static void Terminate();
-	static bool GetKeyDown(char key);
 	static void MouseCallBack(GLFWwindow *window, double xpos, double ypos);
 	static void MouseButtonCallback(GLFWwindow *window, int button, int action, int mods);
 	static float yaw;
 	static float pitch;
 	static glm::vec3 cameraPosition;
+	static glm::mat4 rotationMatrix;
 
   private:
 	static GLFWwindow *window;

@@ -44,8 +44,7 @@ void Cube::Render(float x, float y, float z, float length, glm::vec4 color)
 {
 	shader->Bind();
 	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::rotate(model, glm::radians(OpenGL::yaw), glm::vec3(0.0f, 1.0f, 0.0f));	  // 绕Y轴旋转
-	model = glm::rotate(model, glm::radians(OpenGL::pitch), glm::vec3(1.0f, 0.0f, 0.0f)); // 绕X轴旋转
+	model = OpenGL::rotationMatrix * model;
 	model = glm::translate(model, glm::vec3(x, y, z));
 	glm::mat4 view = glm::lookAt(
 		OpenGL::cameraPosition,		 // 相机位置（稍微在立方体前方）
