@@ -2,8 +2,8 @@
 
 void Game::Init()
 {
-	Game::grid[rand() % 4 + 1][rand() % 4 + 1] = 2;
 	srand(time(nullptr));
+	Game::grid[rand() % 4 + 1][rand() % 4 + 1] = 2;
 }
 
 void Game::KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mods)
@@ -33,7 +33,6 @@ void Game::Update()
 {
 	if (!inputKey)
 		return;
-	LOG_INFO("{}", inputKey);
 	// 记录操作前的状态
 	static int record[SIZE][SIZE];
 	for (int i = 1; i <= 4; i++)

@@ -1,2 +1,3 @@
 # game2048
-A simple C/C++ project.
+实现3D版2048
+

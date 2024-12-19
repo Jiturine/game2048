@@ -2,10 +2,11 @@
 #include "List.h"
 #include "Renderer.h"
 #include "ScoreManager.h"
-#include "Game.h"
+#include "Game3D.h"
 #include "OpenGL.h"
 #include "Text.h"
 #include "Log.h"
+#include "Cube.h"
 
 constexpr unsigned int SCREEN_WIDTH = 1920;
 constexpr unsigned int SCREEN_HEIGHT = 1080;
@@ -51,22 +52,28 @@ int main()
 	// 编译着色器
 	auto shader = new Shader("shaders/rectangle_shader/rectangle_vertex_shader.vs",
 							 "shaders/rectangle_shader/rectangle_fragment_shader.fs");
-	Game::Init();
+	Game3D::Init();
 	while (!OpenGL::ShouldClose() && !Game::gameOver)
 	{
 		glClear(GL_COLOR_BUFFER_BIT);
-		Text::Render(textShader, "Score:" + std::to_string(Game::score), 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
+		glClear(GL_DEPTH_BUFFER_BIT);
+		glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+		// Text::Render(textShader, "Score:" + std::to_string(Game::score), 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
+		// for (int i = 1; i <= 4; i++)
+		// 	for (int j = 1; j <= 4; j++)
+		// 	{
+		// 		Rectangle::Render(460.0f + j * 200.0f, 40.0f + (5 - i) * 200.0f, 190.0f, 190.0f, color[Game::grid[i][j]]);
+		// 		if (Game::grid[i][j])
+		// 		{
+		// 			Text::Render(textShader, std::to_string(Game::grid[i][j]), 460.0f + j * 200.0f, 40.0f + (5 - i) * 200.0f, 1.0f, glm::vec3(0.0f, 0.0f, 0.0f));
+		// 		}
+		// 	}
 		for (int i = 1; i <= 4; i++)
 			for (int j = 1; j <= 4; j++)
-			{
-				Rectangle::Render(460.0f + j * 200.0f, 40.0f + (5 - i) * 200.0f, 190.0f, 190.0f, color[Game::grid[i][j]]);
-				if (Game::grid[i][j])
-				{
-					Text::Render(textShader, std::to_string(Game::grid[i][j]), 460.0f + j * 200.0f, 40.0f + (5 - i) * 200.0f, 1.0f, glm::vec3(0.0f, 0.0f, 0.0f));
-				}
-			}
-		Game::Print();
-		Game::Update();
+				for (int k = 1; k <= 4; k++)
+					Cube::Render(-2.5f + 1.01f * i, -2.5f + 1.01f * j, -2.5f + 1.01f * k, 0.0f, color[Game3D::grid[i][j][k]]);
+		Game3D::Print();
+		// Game3D::Update();
 
 		OpenGL::Update();
 	}

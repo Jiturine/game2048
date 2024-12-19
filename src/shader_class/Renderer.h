@@ -10,5 +10,10 @@ class VertexArray;
 class Renderer
 {
   public:
-	static void Draw(const VertexArray &vertexArray, const IndexBuffer &inderBuffer, const Shader &shader);
+	enum class DrawMode
+	{
+		Triangles,
+		Lines
+	};
+	static void Draw(const VertexArray &vertexArray, const IndexBuffer &inderBuffer, const Shader &shader, DrawMode drawMode = DrawMode::Triangles);
 };

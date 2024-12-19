@@ -5,6 +5,7 @@
 #include <GLFW/glfw3.h>
 #include "Text.h"
 #include "Rectangle.h"
+#include "Cube.h"
 #include "Game.h"
 
 class OpenGL
@@ -18,8 +19,16 @@ class OpenGL
 	static bool ShouldClose();
 	static void Terminate();
 	static bool GetKeyDown(char key);
+	static void MouseCallBack(GLFWwindow *window, double xpos, double ypos);
+	static void MouseButtonCallback(GLFWwindow *window, int button, int action, int mods);
+	static float yaw;
+	static float pitch;
+	static glm::vec3 cameraPosition;
 
   private:
 	static GLFWwindow *window;
+	static bool mouseDragging;
+	static double lastX;
+	static double lastY;
 	OpenGL() = delete;
 };
