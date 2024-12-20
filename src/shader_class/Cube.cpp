@@ -6,57 +6,90 @@ void Cube::Init()
 	vertexArray = new VertexArray;
 	vertexArray->Bind();
 	float vertices[] = {
-		-0.5f, 0.5f, -0.5f,	 // 上左后 0
-		-0.5f, 0.5f, 0.5f,	 // 上左前 1
-		0.5f, 0.5f, 0.5f,	 // 上右前 2
-		0.5f, 0.5f, -0.5f,	 // 上右后 3
-		-0.5f, -0.5f, -0.5f, // 下左后 4
-		-0.5f, -0.5f, 0.5f,	 // 下左前 5
-		0.5f, -0.5f, 0.5f,	 // 下右前 6
-		0.5f, -0.5f, -0.5f	 // 下右后 7
+		// 上面
+		-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, // 上左后 0 --------- 0
+		-0.5f, 0.5f, 0.5f, 0.0f, 0.0f,	// 上左前 1 --------- 1
+		0.5f, 0.5f, 0.5f, 1.0f, 0.0f,	// 上右前 2 --------- 2
+		0.5f, 0.5f, -0.5f, 1.0f, 1.0f,	// 上右后 3 --------- 3
+		// 前面
+		-0.5f, 0.5f, 0.5f, 0.0f, 1.0f,	// 上左前 1 --------- 4
+		-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, // 下左前 5 --------- 5
+		0.5f, -0.5f, 0.5f, 1.0f, 0.0f,	// 下右前 6 --------- 6
+		0.5f, 0.5f, 0.5f, 1.0f, 1.0f,	// 上右前 2 --------- 7
+		// 左面
+		-0.5f, 0.5f, -0.5f, 0.0f, 1.0f,	 // 上左后 0 --------- 8
+		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, // 下左后 4 --------- 9
+		-0.5f, -0.5f, 0.5f, 1.0f, 0.0f,	 // 下左前 5 --------- 10
+		-0.5f, 0.5f, 0.5f, 1.0f, 1.0f,	 // 上左前 1 --------- 11
+		// 右面
+		0.5f, 0.5f, 0.5f, 0.0f, 1.0f,	// 上右前 2 --------- 12
+		0.5f, -0.5f, 0.5f, 0.0f, 0.0f,	// 下右前 6 --------- 13
+		0.5f, -0.5f, -0.5f, 1.0f, 0.0f, // 下右后 7 --------- 14
+		0.5f, 0.5f, -0.5f, 1.0f, 1.0f,	// 上右后 3 --------- 15
+		// 后面
+		0.5f, 0.5f, -0.5f, 0.0f, 1.0f,	 // 上右后 3 --------- 16
+		0.5f, -0.5f, -0.5f, 0.0f, 0.0f,	 // 下右后 7 --------- 17
+		-0.5f, -0.5f, -0.5f, 1.0f, 0.0f, // 下左后 4 --------- 18
+		-0.5f, 0.5f, -0.5f, 1.0f, 1.0f,	 // 上左后 0 --------- 19
+		// 底面
+		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, // 下左后 4 --------- 20
+		-0.5f, -0.5f, 0.5f, 0.0f, 1.0f,	 // 下左前 5 --------- 21
+		0.5f, -0.5f, 0.5f, 1.0f, 1.0f,	 // 下右前 6 --------- 22
+		0.5f, -0.5f, -0.5f, 1.0f, 0.0f	 // 下右后 7 --------- 23
 	};
 	unsigned int faceIndices[] = {
-		0, 1, 2, //
-		2, 3, 0, //
-		1, 5, 2, //
-		5, 6, 2, //
-		2, 6, 7, //
-		7, 3, 2, //
-		3, 7, 4, //
-		4, 0, 3, //
-		0, 4, 5, //
-		5, 1, 0, //
-		5, 6, 4, //
-		6, 7, 4};
-	unsigned int lineIndices[] = {
-		0, 1, 1, 2, 2, 3, 0, 3, 1, 5, 2, 6, 3, 7, 0, 4, 4, 5, 5, 6, 6, 7, 7, 4};
+		0, 1, 2,	//
+		2, 3, 0,	//
+		4, 5, 6,	//
+		6, 7, 4,	//
+		8, 9, 10,	//
+		10, 11, 8,	//
+		12, 13, 14, //
+		14, 15, 12, //
+		16, 17, 18, //
+		18, 19, 16, //
+		20, 21, 22, //
+		22, 23, 20	//
+	};
+	unsigned int lineIndices[] =
+		{0, 1, 1, 2, 2, 3, 3, 0, 4, 5, 6, 7, 16, 17, 18, 19, 20, 21, 21, 22, 22, 23, 23, 20};
 	vertexBuffer = new VertexBuffer(vertices, sizeof(vertices));
 	VertexBufferLayout layout;
 	layout.Push<float>(3);
+	layout.Push<float>(2);
 	vertexArray->AddBuffer(*vertexBuffer, layout);
 	faceIndexBuffer = new IndexBuffer(faceIndices, 3 * 12);
-	lineIndexBuffer = new IndexBuffer(lineIndices, 4 * 6);
+	lineIndexBuffer = new IndexBuffer(lineIndices, 2 * 12);
 	// 编译着色器
 	shader = new Shader("shaders/cube_shader/cube_vertex_shader.vs",
 						"shaders/cube_shader/cube_fragment_shader.fs");
+	// 加载纹理
+	textures[0] = new Texture("resources/textures/0.png");
+	for (int i = 1; i <= 13; i++)
+	{
+		textures[i] = new Texture(std::string("resources/textures/") + std::to_string(1 << i) + std::string(".png"));
+	}
 }
-void Cube::Render(float x, float y, float z, float length, glm::vec4 color)
+void Cube::Render(float x, float y, float z, int num)
 {
 	shader->Bind();
-	glm::mat4 model = glm::mat4(1.0f);
-	model = OpenGL::rotationMatrix * model;
+	glm::mat4 model = OpenGL::rotationMatrix;
 	model = glm::translate(model, glm::vec3(x, y, z));
 	glm::mat4 view = glm::lookAt(
 		OpenGL::cameraPosition,		 // 相机位置（稍微在立方体前方）
 		glm::vec3(0.0f, 0.0f, 0.0f), // 目标点（看向场景原点）
 		glm::vec3(0.0f, 1.0f, 0.0f)	 // 上方向（Y轴向上）
 	);
-	auto projection = glm::perspective(glm::radians(45.0f), (float)OpenGL::screenWidth / (float)OpenGL::screenHeight, 0.1f, 100.0f);
-	// auto projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, 0.1f, 100.0f);
+	glm::mat4 projection = glm::perspective(
+		glm::radians(45.0f),
+		(float)OpenGL::screenWidth / (float)OpenGL::screenHeight,
+		0.1f, 100.0f);
 	auto mvp = projection * view * model;
-
+	size_t index = ((num == 0) ? 0 : log2(num));
+	textures[index]->Bind();
 	shader->SetUniform("mvp", mvp);
-	shader->SetUniform("uColor", color);
+	shader->SetUniform("uTexture", 0);
+	shader->SetUniform("uColor", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	Renderer::Draw(*vertexArray, *faceIndexBuffer, *shader);
 	shader->SetUniform("uColor", glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
 	Renderer::Draw(*vertexArray, *lineIndexBuffer, *shader, Renderer::DrawMode::Lines);
@@ -67,4 +100,5 @@ VertexBuffer *Cube::vertexBuffer;
 Shader *Cube::shader;
 IndexBuffer *Cube::faceIndexBuffer;
 IndexBuffer *Cube::lineIndexBuffer;
+Texture *Cube::textures[14];
 glm::mat4 Cube::transform;

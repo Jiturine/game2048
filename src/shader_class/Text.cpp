@@ -105,6 +105,4 @@ void Text::Render(Shader &shader, const std::string &text, float x, float y, flo
 		// 更新位置到下一个字形的原点，注意单位是1/64像素
 		x += (ch.advance >> 6) * scale; // 位偏移6个单位来获取单位为像素的值 (2^6 = 64)
 	}
-	glBindVertexArray(0);
-	glBindTexture(GL_TEXTURE_2D, 0);
 }

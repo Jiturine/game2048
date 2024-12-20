@@ -2,6 +2,7 @@
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/gtx/string_cast.hpp>
 #include "Renderer.h"
+#include "Texture.h"
 #include "Log.h"
 
 class VertexArray;
@@ -11,7 +12,7 @@ class Cube
 {
   public:
 	static void Init();
-	static void Render(float x, float y, float z, float length, glm::vec4 color);
+	static void Render(float x, float y, float z, int num);
 
   private:
 	static VertexArray *vertexArray;
@@ -20,4 +21,5 @@ class Cube
 	static IndexBuffer *lineIndexBuffer;
 	static Shader *shader;
 	static glm::mat4 transform;
+	static Texture *textures[];
 };
