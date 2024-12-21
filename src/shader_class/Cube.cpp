@@ -67,7 +67,7 @@ void Cube::Init()
 	textures[0] = new Texture("resources/textures/0.png");
 	for (int i = 1; i <= 13; i++)
 	{
-		textures[i] = new Texture(std::string("resources/textures/") + std::to_string(1 << i) + std::string(".png"));
+		textures[i] = new Texture(std::format("resources/textures/{}.png", 1 << i));
 	}
 }
 void Cube::Render(float x, float y, float z, int num)

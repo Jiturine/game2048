@@ -19,7 +19,7 @@ class Text
   public:
 	static void Init(unsigned int screenWidth, unsigned int screenHeight);
 	static void LoadFont(const std::string &fontName, int fontHeight);
-	static void Render(Shader &shader, const std::string &text, float x, float y, float scale, glm::vec3 color);
+	static void Render(const std::string &text, float x, float y, float scale, glm::vec3 color);
 	class Character
 	{
 	  public:
@@ -33,5 +33,6 @@ class Text
   private:
 	static VertexArray *vertexArray;
 	static VertexBuffer *vertexBuffer;
+	static Shader *shader;
 	static glm::mat4 projection;
 };

@@ -5,6 +5,7 @@
 class ScoreManager
 {
   public:
+	ScoreManager() = delete;
 	class ScoreInfo
 	{
 	  public:
@@ -20,7 +21,4 @@ class ScoreManager
 	};
 	static void Init() {}
 	static List<ScoreInfo> rankList;
-
-  private:
-	ScoreManager() = delete;
 };

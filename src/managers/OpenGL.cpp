@@ -6,9 +6,9 @@ std::string OpenGL::windowName;
 GLFWwindow *OpenGL::window;
 double OpenGL::lastX;
 double OpenGL::lastY;
+float OpenGL::lastTime;
+float OpenGL::deltaTime;
 bool OpenGL::mouseDragging;
-float OpenGL::yaw;
-float OpenGL::pitch;
 glm::vec3 OpenGL::cameraPosition;
 glm::mat4 OpenGL::rotationMatrix = glm::mat4(1.0f);
 
@@ -20,6 +20,10 @@ void OpenGL::Init(const unsigned int &screenWidth, const unsigned int &screenHei
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	// 全屏
+	// GLFWmonitor *monitor = glfwGetPrimaryMonitor();
+	// const GLFWvidmode *mode = glfwGetVideoMode(monitor);
+	// window = glfwCreateWindow(mode->width, mode->height, windowName.c_str(), monitor, NULL);
 	window = glfwCreateWindow(screenWidth, screenHeight, windowName.c_str(), NULL, NULL);
 	glfwMakeContextCurrent(window);
 	gladLoadGLLoader(GLADloadproc(glfwGetProcAddress));
@@ -34,17 +38,20 @@ void OpenGL::Init(const unsigned int &screenWidth, const unsigned int &screenHei
 	// 设置摄像机位置
 	cameraPosition = glm::vec3(0.0f, 0.0f, 10.0f);
 	// 设置回调
-	glfwSetKeyCallback(window, Game3D::KeyCallback);
+	glfwSetKeyCallback(window, Game::KeyCallback);
 	glfwSetCursorPosCallback(window, MouseCallBack);
 	glfwSetMouseButtonCallback(window, MouseButtonCallback);
-	// 文字投影矩阵设置
 	Text::Init(screenWidth, screenHeight);
+	Text::LoadFont("HarmonyOS_Sans_SC_Regular.ttf", 48);
 	Rectangle::Init(screenWidth, screenHeight);
 	Cube::Init();
 }
 
 void OpenGL::Update()
 {
+	double currentTime = glfwGetTime();
+	deltaTime = float(currentTime - lastTime); // 计算每帧时间间隔（秒）
+	lastTime = currentTime;					   // 更新 lastTime
 	glfwSwapBuffers(window);
 	glfwPollEvents();
 }
@@ -71,10 +78,6 @@ void OpenGL::MouseCallBack(GLFWwindow *window, double xpos, double ypos)
 	float sensitivity = 0.05f; // 控制灵敏度
 	xoffset *= sensitivity;
 	yoffset *= sensitivity;
-
-	yaw += xoffset;
-	pitch += yoffset;
-
 	glm::mat4 mat(1.0f);
 	mat = glm::rotate(mat, xoffset * sensitivity, glm::vec3(0.0f, 1.0f, 0.0f));
 	mat = glm::rotate(mat, yoffset * sensitivity, glm::vec3(1.0f, 0.0f, 0.0f));

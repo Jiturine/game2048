@@ -4,6 +4,7 @@ glm::mat4 Text::projection;
 std::map<char, Text::Character> Text::Characters;
 VertexArray *Text::vertexArray;
 VertexBuffer *Text::vertexBuffer;
+Shader *Text::shader;
 
 void Text::Init(unsigned int screenWidth, unsigned int screenHeight)
 {
@@ -15,6 +16,8 @@ void Text::Init(unsigned int screenWidth, unsigned int screenHeight)
 	VertexBufferLayout layout;
 	layout.Push<float>(4);
 	vertexArray->AddBuffer(*vertexBuffer, layout);
+	shader = new Shader("shaders/text_shader/text_vertex_shader.vs",
+						"shaders/text_shader/text_fragment_shader.fs");
 }
 
 void Text::LoadFont(const std::string &fontName, int fontHeight)
@@ -24,7 +27,7 @@ void Text::LoadFont(const std::string &fontName, int fontHeight)
 	if (FT_Init_FreeType(&ft))
 		LOG_ERROR("FREETYPE: Could not init FreeType Library");
 	FT_Face face;
-	std::string fontPath = std::string(PATH) + std::string("/fonts/") + fontName;
+	std::string fontPath = std::format("{}/fonts/{}", PATH, fontName);
 	if (FT_New_Face(ft, fontPath.c_str(), 0, &face))
 		LOG_ERROR("FREETYPE: Failed to load font");
 	// 设置字体大小
@@ -71,11 +74,11 @@ void Text::LoadFont(const std::string &fontName, int fontHeight)
 	FT_Done_FreeType(ft);
 }
 
-void Text::Render(Shader &shader, const std::string &text, float x, float y, float scale, glm::vec3 color)
+void Text::Render(const std::string &text, float x, float y, float scale, glm::vec3 color)
 {
-	shader.Bind();
-	shader.SetUniform("textColor", color);
-	shader.SetUniform("projection", projection);
+	shader->Bind();
+	shader->SetUniform("textColor", color);
+	shader->SetUniform("projection", projection);
 	glActiveTexture(GL_TEXTURE0);
 	vertexArray->Bind();
 	for (std::string::const_iterator c = text.begin(); c != text.end(); c++)

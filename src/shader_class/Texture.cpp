@@ -1,7 +1,7 @@
 #include "Texture.h"
 
 Texture::Texture(const std::string &path)
-	: rendererID(0), filePath(std::string(PATH) + "/" + path), width(0), height(0), BPP(0),
+	: rendererID(0), filePath(std::format("{}/{}", PATH, path)), width(0), height(0), BPP(0),
 	  localBuffer(nullptr)
 {
 	stbi_set_flip_vertically_on_load(true); // 用png格式，则要将图片上下翻转
