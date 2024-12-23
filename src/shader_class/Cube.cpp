@@ -70,11 +70,12 @@ void Cube::Init()
 		textures[i] = new Texture(std::format("resources/textures/{}.png", 1 << i));
 	}
 }
-void Cube::Render(float x, float y, float z, int num)
+void Cube::Render(float x, float y, float z, float scale, int num)
 {
 	shader->Bind();
 	glm::mat4 model = OpenGL::rotationMatrix;
 	model = glm::translate(model, glm::vec3(x, y, z));
+	model = glm::scale(model, glm::vec3(scale, scale, scale));
 	glm::mat4 view = glm::lookAt(
 		OpenGL::cameraPosition,		 // 相机位置（稍微在立方体前方）
 		glm::vec3(0.0f, 0.0f, 0.0f), // 目标点（看向场景原点）

@@ -26,9 +26,13 @@ class OpenGL
 	static float deltaTime;
 
   private:
+	static constexpr float sensitivity = 0.05f; // 控制转动灵敏度
 	static float lastTime;
 	static GLFWwindow *window;
 	static bool mouseDragging;
+	static bool mouseEnter;
 	static double lastX;
 	static double lastY;
+	static float xoffset;
+	static float yoffset;
 };

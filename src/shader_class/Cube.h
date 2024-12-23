@@ -12,7 +12,7 @@ class Cube
 {
   public:
 	static void Init();
-	static void Render(float x, float y, float z, int num);
+	static void Render(float x, float y, float z, float scale, int num);
 
   private:
 	static VertexArray *vertexArray;

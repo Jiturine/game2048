@@ -6,9 +6,12 @@ std::string OpenGL::windowName;
 GLFWwindow *OpenGL::window;
 double OpenGL::lastX;
 double OpenGL::lastY;
+float OpenGL::xoffset = 0.0f;
+float OpenGL::yoffset = 0.0f;
 float OpenGL::lastTime;
 float OpenGL::deltaTime;
 bool OpenGL::mouseDragging;
+bool OpenGL::mouseEnter;
 glm::vec3 OpenGL::cameraPosition;
 glm::mat4 OpenGL::rotationMatrix = glm::mat4(1.0f);
 
@@ -53,7 +56,23 @@ void OpenGL::Update()
 	deltaTime = float(currentTime - lastTime); // 计算每帧时间间隔（秒）
 	lastTime = currentTime;					   // 更新 lastTime
 	glfwSwapBuffers(window);
+	mouseEnter = false;
 	glfwPollEvents();
+	if (!mouseEnter && !mouseDragging)
+	{
+		glm::mat4 matrix(1.0f);
+		if (abs(xoffset) > 0.0001f)
+		{
+			xoffset *= 0.9f;
+			matrix = glm::rotate(matrix, xoffset * sensitivity, glm::vec3(0.0f, 1.0f, 0.0f));
+		}
+		if (abs(yoffset) > 0.0001f)
+		{
+			yoffset *= 0.9f;
+			matrix = glm::rotate(matrix, xoffset * sensitivity, glm::vec3(0.0f, 1.0f, 0.0f));
+		}
+		rotationMatrix = matrix * rotationMatrix;
+	}
 }
 
 bool OpenGL::ShouldClose()
@@ -67,21 +86,35 @@ void OpenGL::Terminate()
 }
 void OpenGL::MouseCallBack(GLFWwindow *window, double xpos, double ypos)
 {
+	mouseEnter = true;
 	if (!mouseDragging)
-		return;
-
-	float xoffset = xpos - lastX;
-	float yoffset = ypos - lastY;
-	lastX = xpos;
-	lastY = ypos;
-
-	float sensitivity = 0.05f; // 控制灵敏度
-	xoffset *= sensitivity;
-	yoffset *= sensitivity;
-	glm::mat4 mat(1.0f);
-	mat = glm::rotate(mat, xoffset * sensitivity, glm::vec3(0.0f, 1.0f, 0.0f));
-	mat = glm::rotate(mat, yoffset * sensitivity, glm::vec3(1.0f, 0.0f, 0.0f));
-	rotationMatrix = mat * rotationMatrix;
+	{
+		glm::mat4 matrix(1.0f);
+		if (abs(xoffset) > 0.0001f)
+		{
+			xoffset *= 0.9f;
+			matrix = glm::rotate(matrix, xoffset * sensitivity, glm::vec3(0.0f, 1.0f, 0.0f));
+		}
+		if (abs(yoffset) > 0.0001f)
+		{
+			yoffset *= 0.9f;
+			matrix = glm::rotate(matrix, xoffset * sensitivity, glm::vec3(0.0f, 1.0f, 0.0f));
+		}
+		rotationMatrix = matrix * rotationMatrix;
+	}
+	else
+	{
+		xoffset = float(xpos - lastX);
+		yoffset = float(ypos - lastY);
+		lastX = xpos;
+		lastY = ypos;
+		xoffset *= sensitivity;
+		yoffset *= sensitivity;
+		glm::mat4 mat(1.0f);
+		mat = glm::rotate(mat, xoffset * sensitivity, glm::vec3(0.0f, 1.0f, 0.0f));
+		mat = glm::rotate(mat, yoffset * sensitivity, glm::vec3(1.0f, 0.0f, 0.0f));
+		rotationMatrix = mat * rotationMatrix;
+	}
 }
 
 void OpenGL::MouseButtonCallback(GLFWwindow *window, int button, int action, int mods)

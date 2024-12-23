@@ -3,6 +3,16 @@
 void Game::Init()
 {
 	srand(time(nullptr));
+	for (int i = 1; i <= 4; i++)
+		for (int j = 1; j <= 4; j++)
+			for (int k = 1; k <= 4; k++)
+			{
+				grid[i][j][k].num = 0;
+				grid[i][j][k].preNum = 0;
+				grid[i][j][k].indexOfNum = {0, 0, 0};
+				grid[i][j][k].indexOfMergedNum = {0, 0, 0};
+				grid[i][j][k].targetIndex = {i, j, k};
+			}
 	int i, j, k;
 	do
 	{
@@ -10,42 +20,57 @@ void Game::Init()
 		j = rand() % 4 + 1;
 		k = rand() % 4 + 1;
 	} while ((i == 2 || i == 3) && (j == 2 || j == 3) && (k == 2 || k == 3));
-	Game::grid[i][j][k] = 2;
+	grid[i][j][k].num = 2;
+	grid[i][j][k].preNum = 2;
+	grid[i][j][k].indexOfNum = {i, j, k};
+	LOG_INFO("Init: {} {} {}", i, j, k);
 }
 
+// 绕X轴顺时针旋转90° (向X轴负方向看)
 void Game::RevolveX()
 {
-	static int temp[SIZE][SIZE][SIZE];
+	static Grid tempGrid[SIZE][SIZE][SIZE];
 	for (int x = 1; x <= 4; x++)
 		for (int y = 1; y <= 4; y++)
 			for (int z = 1; z <= 4; z++)
 			{
-				temp[x][y][z] = grid[x][5 - z][y];
+				tempGrid[x][y][z].num = grid[x][5 - z][y].num;
+				tempGrid[x][y][z].indexOfNum = grid[x][5 - z][y].indexOfNum;
+				tempGrid[x][y][z].indexOfMergedNum = grid[x][5 - z][y].indexOfMergedNum;
 			}
 	for (int x = 1; x <= 4; x++)
 		for (int y = 1; y <= 4; y++)
 			for (int z = 1; z <= 4; z++)
 			{
-				grid[x][y][z] = temp[x][y][z];
-			}
-}
-void Game::RevolveY()
-{
-	static int temp[SIZE][SIZE][SIZE];
-	for (int x = 1; x <= 4; x++)
-		for (int y = 1; y <= 4; y++)
-			for (int z = 1; z <= 4; z++)
-			{
-				temp[x][y][z] = grid[5 - z][y][x];
-			}
-	for (int x = 1; x <= 4; x++)
-		for (int y = 1; y <= 4; y++)
-			for (int z = 1; z <= 4; z++)
-			{
-				grid[x][y][z] = temp[x][y][z];
+				grid[x][y][z].num = tempGrid[x][y][z].num;
+				grid[x][y][z].indexOfNum = tempGrid[x][y][z].indexOfNum;
+				grid[x][y][z].indexOfMergedNum = tempGrid[x][y][z].indexOfMergedNum;
 			}
 }
 
+// 绕Y轴顺时针旋转90° (向Y轴负方向看)
+void Game::RevolveY()
+{
+	static Grid tempGrid[SIZE][SIZE][SIZE];
+	for (int x = 1; x <= 4; x++)
+		for (int y = 1; y <= 4; y++)
+			for (int z = 1; z <= 4; z++)
+			{
+				tempGrid[x][y][z].num = grid[z][y][5 - x].num;
+				tempGrid[x][y][z].indexOfNum = grid[z][y][5 - x].indexOfNum;
+				tempGrid[x][y][z].indexOfMergedNum = grid[z][y][5 - x].indexOfMergedNum;
+			}
+	for (int x = 1; x <= 4; x++)
+		for (int y = 1; y <= 4; y++)
+			for (int z = 1; z <= 4; z++)
+			{
+				grid[x][y][z].num = tempGrid[x][y][z].num;
+				grid[x][y][z].indexOfNum = tempGrid[x][y][z].indexOfNum;
+				grid[x][y][z].indexOfMergedNum = tempGrid[x][y][z].indexOfMergedNum;
+			}
+}
+
+// 向后压缩
 void Game::Compress()
 {
 	for (int k = 0; k < 3; k++)
@@ -56,11 +81,11 @@ void Game::Compress()
 					continue;
 				for (int z = 1; z <= 3; z++)
 				{
-					if (grid[x][y][z] == 0)
+					if (grid[x][y][z].num == 0 && grid[x][y][z + 1].num != 0)
 					{
-						int temp = grid[x][y][z];
-						grid[x][y][z] = grid[x][y][z + 1];
-						grid[x][y][z + 1] = temp;
+						std::swap(grid[x][y][z].num, grid[x][y][z + 1].num);
+						std::swap(grid[x][y][z].indexOfNum, grid[x][y][z + 1].indexOfNum);
+						std::swap(grid[x][y][z].indexOfMergedNum, grid[x][y][z + 1].indexOfMergedNum);
 					}
 				}
 			}
@@ -68,14 +93,157 @@ void Game::Compress()
 
 void Game::Update()
 {
+	elapsedTime += OpenGL::deltaTime;
+	if (elapsedTime > totalTime && !numChanged)
+	{
+		numChanged = true;
+		for (int i = 1; i <= 4; i++)
+			for (int j = 1; j <= 4; j++)
+				for (int k = 1; k <= 4; k++)
+				{
+					grid[i][j][k].preNum = grid[i][j][k].num;
+					grid[i][j][k].indexOfNum = {i, j, k};
+				}
+	}
 	if (!inputKey)
 		return;
 	// 记录操作前的状态
-	static int record[SIZE][SIZE][SIZE];
+	static int recordNum[SIZE][SIZE][SIZE];
 	for (int i = 1; i <= 4; i++)
 		for (int j = 1; j <= 4; j++)
 			for (int k = 1; k <= 4; k++)
-				record[i][j][k] = grid[i][j][k];
+				recordNum[i][j][k] = grid[i][j][k].num;
+	char targetFace = GetTargetFace();
+	// 旋转至向后面
+	int revolveTime = (targetFace == 'a')	? 1 // 绕Y轴顺时针
+					  : (targetFace == 'q') ? 2 // 绕Y轴顺时针
+					  : (targetFace == 'd') ? 3 // 绕Y轴顺时针
+					  : (targetFace == 'e') ? 0
+					  : (targetFace == 's') ? 3	 // 绕X轴顺时针
+											: 1; // 绕X轴顺时针
+	for (int i = 0; i < revolveTime; i++)
+	{
+		if (targetFace == 'a' || targetFace == 'q' || targetFace == 'd' || targetFace == 'e')
+		{
+			RevolveY();
+		}
+		else
+		{
+			RevolveX();
+		}
+	}
+	// 向底面压缩
+	Compress();
+	// 合并
+	for (int i = 1; i <= 4; i++)
+		for (int j = 1; j <= 4; j++)
+		{
+			if ((i == 2 || i == 3) && (j == 2 || j == 3))
+				continue;
+			for (int k = 1; k <= 3; k++)
+			{
+				if (grid[i][j][k].num == grid[i][j][k + 1].num && grid[i][j][k].num != 0)
+				{
+					grid[i][j][k].num *= 2;
+					grid[i][j][k + 1].num = 0;
+					grid[i][j][k].indexOfMergedNum = grid[i][j][k + 1].indexOfNum;
+					grid[i][j][k + 1].indexOfNum = {0, 0, 0};
+					score += grid[i][j][k].num;
+				}
+			}
+		}
+	// 再次压缩
+	Compress();
+	// 旋转还原
+	revolveTime = (4 - revolveTime) % 4;
+	for (int i = 0; i < revolveTime; i++)
+	{
+		if (targetFace == 'a' || targetFace == 'q' || targetFace == 'd' || targetFace == 'e')
+		{
+			RevolveY();
+		}
+		else
+		{
+			RevolveX();
+		}
+	}
+	int count = 0;
+	for (int i = 1; i <= 4; i++)
+		for (int j = 1; j <= 4; j++)
+			for (int k = 1; k <= 4; k++)
+			{
+				if (grid[i][j][k].num != 0)
+				{
+					int x = grid[i][j][k].indexOfNum.x;
+					int y = grid[i][j][k].indexOfNum.y;
+					int z = grid[i][j][k].indexOfNum.z;
+					grid[x][y][z].targetIndex = {i, j, k};
+					if (i != x || j != y || k != z)
+					{
+						count++;
+						LOG_INFO("{} {} {} {} {} {}", x, y, z, i, j, k);
+					}
+
+					int mx = grid[i][j][k].indexOfMergedNum.x;
+					int my = grid[i][j][k].indexOfMergedNum.y;
+					int mz = grid[i][j][k].indexOfMergedNum.z;
+					grid[mx][my][mz].targetIndex = {i, j, k};
+					grid[i][j][k].indexOfMergedNum = {0, 0, 0};
+				}
+			}
+	LOG_INFO(count);
+	// 检测是否有移动,并且有空位
+	bool changed = false, remain = false;
+	for (int i = 1; i <= 4; i++)
+	{
+		for (int j = 1; j <= 4; j++)
+		{
+			for (int k = 1; k <= 4; k++)
+			{
+				if ((i == 2 || i == 3) && (j == 2 || j == 3) && (k == 2 || k == 3))
+					continue;
+				if (recordNum[i][j][k] != grid[i][j][k].num)
+				{
+					changed = true;
+				}
+				if (grid[i][j][k].num == 0)
+				{
+					remain = true;
+				}
+			}
+			if (changed && remain)
+				break;
+		}
+		if (changed && remain)
+			break;
+	}
+	// 满足条件，随机生成一个2或4
+	if (changed && remain)
+	{
+		int i, j, k;
+		do
+		{
+			i = rand() % 4 + 1;
+			j = rand() % 4 + 1;
+			k = rand() % 4 + 1;
+		} while (((i == 2 || i == 3) && (j == 2 || j == 3) && (k == 2 || k == 3)) || grid[i][j][k].num != 0);
+		// 80%生成2，20%生成4
+		grid[i][j][k].num = rand() % 5 ? 2 : 4;
+		grid[i][j][k].preNum = 0;
+		grid[i][j][k].indexOfNum = {i, j, k};
+		grid[i][j][k].targetIndex = {i, j, k};
+	}
+	// 判断游戏结束
+	if (!changed && !remain)
+	{
+		gameOver = true;
+	}
+	inputKey = 0;
+	elapsedTime = 0;
+	numChanged = false;
+}
+char Game::GetTargetFace()
+{
 	glm::vec4 normals[6] = {
 		glm::vec4(0.0f, 0.0f, 1.0f, 0.0f),	// 前面 (正Z)
 		glm::vec4(0.0f, 0.0f, -1.0f, 0.0f), // 后面 (负Z)
@@ -105,111 +273,14 @@ void Game::Update()
 			maxDotValue = glm::dot(glm::vec3(normals[i]), direction);
 		}
 	}
-	char targetFace = (maxDotIndex == 0)   ? 'q'
-					  : (maxDotIndex == 1) ? 'e'
-					  : (maxDotIndex == 2) ? 'a'
-					  : (maxDotIndex == 3) ? 'd'
-					  : (maxDotIndex == 4) ? 'w'
-					  : (maxDotIndex == 5) ? 's'
-										   : '\0';
-	// 旋转至向底面
-	int revolveTime = (targetFace == 'q')	? 1 // 绕Y轴顺时针
-					  : (targetFace == 'w') ? 2 // 绕Y轴顺时针
-					  : (targetFace == 'e') ? 3 // 绕Y轴顺时针
-					  : (targetFace == 's') ? 0
-					  : (targetFace == 'a') ? 3	 // 绕X轴顺时针
-											: 1; // 绕X轴顺时针
-	for (int i = 0; i < revolveTime; i++)
-	{
-		if (targetFace == 'q' || targetFace == 'w' || targetFace == 'e' || targetFace == 's')
-		{
-			RevolveY();
-		}
-		else
-		{
-			RevolveX();
-		}
-	}
-	// 向底面压缩
-	Compress();
-	// 合并
-	for (int i = 1; i <= 4; i++)
-		for (int j = 1; j <= 4; j++)
-		{
-			if ((i == 2 || i == 3) && (j == 2 || j == 3))
-				continue;
-			for (int k = 1; k <= 3; k++)
-			{
-				if (grid[i][j][k] == grid[i][j][k + 1])
-				{
-					grid[i][j][k] *= 2;
-					grid[i][j][k + 1] = 0;
-					score += grid[i][j][k];
-				}
-			}
-		}
-
-	// 再次压缩
-	Compress();
-	// 旋转还原
-	revolveTime = (4 - revolveTime) % 4;
-	for (int i = 0; i < revolveTime; i++)
-	{
-		if (targetFace == 'q' || targetFace == 'w' || targetFace == 'e' || targetFace == 's')
-		{
-			RevolveY();
-		}
-		else
-		{
-			RevolveX();
-		}
-	}
-	// 检测是否有移动,并且有空位
-	bool changed = false, remain = false;
-	for (int i = 1; i <= 4; i++)
-	{
-		for (int j = 1; j <= 4; j++)
-		{
-			for (int k = 1; k <= 4; k++)
-			{
-				if ((i == 2 || i == 3) && (j == 2 || j == 3) && (k == 2 || k == 3))
-					continue;
-				if (record[i][j][k] != grid[i][j][k])
-				{
-					changed = true;
-				}
-				if (grid[i][j][k] == 0)
-				{
-					remain = true;
-				}
-			}
-			if (changed && remain)
-				break;
-		}
-		if (changed && remain)
-			break;
-	}
-	// 满足条件，随机生成一个2或4
-	if (changed && remain)
-	{
-		int i, j, k;
-		do
-		{
-			i = rand() % 4 + 1;
-			j = rand() % 4 + 1;
-			k = rand() % 4 + 1;
-		} while (((i == 2 || i == 3) && (j == 2 || j == 3) && (k == 2 || k == 3)) || grid[i][j][k] != 0);
-		// 80%生成2，20%生成4
-		grid[i][j][k] = rand() % 5 ? 2 : 4;
-	}
-	// 判断游戏结束
-	if (!changed && !remain)
-	{
-		gameOver = true;
-	}
-	inputKey = 0;
+	return (maxDotIndex == 0)	? 'q'
+		   : (maxDotIndex == 1) ? 'e'
+		   : (maxDotIndex == 2) ? 'a'
+		   : (maxDotIndex == 3) ? 'd'
+		   : (maxDotIndex == 4) ? 'w'
+		   : (maxDotIndex == 5) ? 's'
+								: '\0';
 }
-
 void Game::Print()
 {
 	system("cls");
@@ -219,7 +290,11 @@ void Game::Print()
 		{
 			for (int z = 1; z <= 4; z++)
 			{
-				std::cout << std::setw(5) << grid[x][y][z];
+				std::cout << std::setw(5) << grid[x][y][z].num;
+			}
+			for (int z = 1; z <= 4; z++)
+			{
+				std::cout << std::setw(15) << std::format("({},{},{})", grid[x][y][z].indexOfNum.x, grid[x][y][z].indexOfNum.y, grid[x][y][z].indexOfNum.z);
 			}
 			std::cout << "\n";
 		}
@@ -259,7 +334,9 @@ void Game::KeyCallback(GLFWwindow *window, int key, int scancode, int action, in
 	}
 }
 
-int Game::grid[SIZE][SIZE][SIZE];
+Game::Grid Game::grid[SIZE][SIZE][SIZE];
 int Game::score;
 bool Game::gameOver;
 char Game::inputKey;
+float Game::elapsedTime;
+bool Game::numChanged;
