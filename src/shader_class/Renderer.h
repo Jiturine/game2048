@@ -10,6 +10,7 @@ class VertexArray;
 class Renderer
 {
   public:
+	Renderer() = delete;
 	enum class DrawMode
 	{
 		Triangles,

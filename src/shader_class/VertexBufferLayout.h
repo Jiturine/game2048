@@ -5,7 +5,7 @@
 class VertexBufferLayout
 {
   public:
-	VertexBufferLayout();
+	VertexBufferLayout() = default;
 	template <typename T>
 	void Push(unsigned int count);
 
@@ -20,5 +20,5 @@ class VertexBufferLayout
 	};
 
 	std::vector<VertexBufferElement> elements;
-	unsigned int stride;
+	unsigned int stride = 0;
 };

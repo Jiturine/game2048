@@ -17,9 +17,34 @@ VertexBuffer::VertexBuffer(const void *data, unsigned int size, DataMode dataMod
 		break;
 	}
 }
-VertexBuffer ::~VertexBuffer()
+VertexBuffer::VertexBuffer(const VertexBuffer &vertexBuffer)
+{
+	glGenBuffers(1, &rendererID);
+	glBindBuffer(GL_COPY_READ_BUFFER, vertexBuffer.rendererID);
+	int bufferSize;
+	glGetBufferParameteriv(GL_COPY_READ_BUFFER, GL_BUFFER_SIZE, &bufferSize);
+	glBindBuffer(GL_COPY_WRITE_BUFFER, rendererID);
+	glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, 0, 0, bufferSize);
+}
+VertexBuffer::VertexBuffer(VertexBuffer &&vertexBuffer) noexcept
+	: VertexBuffer()
+{
+	swap(vertexBuffer, *this);
+}
+VertexBuffer &VertexBuffer::operator=(VertexBuffer &vertexBuffer)
+{
+	swap(vertexBuffer, *this);
+	return *this;
+}
+VertexBuffer::~VertexBuffer()
 {
 	glDeleteBuffers(1, &rendererID);
+}
+
+void swap(VertexBuffer vertexBuffer_1, VertexBuffer vertexBuffer_2)
+{
+	using std::swap;
+	swap(vertexBuffer_1.rendererID, vertexBuffer_2.rendererID);
 }
 void VertexBuffer::Bind() const
 {

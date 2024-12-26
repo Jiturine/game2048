@@ -2,22 +2,22 @@
 
 glm::mat4 Text::projection;
 std::map<char, Text::Character> Text::Characters;
-VertexArray *Text::vertexArray;
-VertexBuffer *Text::vertexBuffer;
-Shader *Text::shader;
+std::unique_ptr<VertexArray> Text::vertexArray;
+std::unique_ptr<VertexBuffer> Text::vertexBuffer;
+std::unique_ptr<Shader> Text::shader;
 
 void Text::Init(unsigned int screenWidth, unsigned int screenHeight)
 {
 	Text::projection = glm::ortho(0.0f, static_cast<float>(screenWidth), 0.0f, static_cast<float>(screenHeight));
 	// 生成VBO，VAO
-	vertexArray = new VertexArray;
+	vertexArray = std::make_unique<VertexArray>();
 	vertexArray->Bind();
-	vertexBuffer = new VertexBuffer(nullptr, sizeof(float) * 6 * 4, VertexBuffer::DataMode::DYNAMIC);
+	vertexBuffer = std::make_unique<VertexBuffer>(nullptr, sizeof(float) * 6 * 4, VertexBuffer::DataMode::DYNAMIC);
 	VertexBufferLayout layout;
 	layout.Push<float>(4);
 	vertexArray->AddBuffer(*vertexBuffer, layout);
-	shader = new Shader("shaders/text_shader/text_vertex_shader.vs",
-						"shaders/text_shader/text_fragment_shader.fs");
+	shader = std::make_unique<Shader>("shaders/text_shader/text_vertex_shader.vs",
+									  "shaders/text_shader/text_fragment_shader.fs");
 }
 
 void Text::LoadFont(const std::string &fontName, int fontHeight)

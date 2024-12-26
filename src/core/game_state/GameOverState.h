@@ -2,13 +2,12 @@
 #include "GameState.h"
 #include "Text.h"
 
-class StartState : public GameState
+class GameOverState : public GameState
 {
   public:
 	Type GetType() override
 	{
-		return Type::Start;
+		return Type::GameOver;
 	}
 	void Render() override;
-	void OnExit() override;
 };

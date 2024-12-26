@@ -6,6 +6,11 @@
 #include <iomanip>
 #include "OpenGL.h"
 #include "GameState.h"
+#include "StartState.h"
+#include "PlayingState.h"
+#include "GameOverState.h"
+#include "PauseState.h"
+#include "ScoreManager.h"
 
 class Game
 {
@@ -38,14 +43,13 @@ class Game
 	static float elapsedTime;
 	static constexpr float totalTime = 0.1f;
 	static bool numChanged;
+	static char inputKey;
 
   private:
-	static void
-	RevolveX();
+	static void RevolveX();
 	static void RevolveY();
 	static void Compress();
 	static char GetTargetFace();
-	static char inputKey;
 };
 
 #include "Game.tpp"

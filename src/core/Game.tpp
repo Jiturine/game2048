@@ -4,7 +4,7 @@
 template <class T>
 void Game::SwitchState()
 {
-	if (currentState == nullptr)
+	if (currentState != nullptr)
 	{
 		currentState->OnExit();
 	}

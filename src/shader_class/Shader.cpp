@@ -6,9 +6,61 @@ Shader::Shader(const std::string &vertexPath, const std::string &fragmentPath)
 	const char *fragmentSource = ParseShader(fragmentPath);
 	rendererID = CreateShader(vertexSource, fragmentSource);
 }
+Shader::Shader(const Shader &shader)
+{
+	rendererID = glCreateProgram();
+	int numShaders;
+	glGetProgramiv(shader.rendererID, GL_ATTACHED_SHADERS, &numShaders);
+	std::vector<unsigned int> shaders(numShaders);
+	glGetAttachedShaders(shader.rendererID, numShaders, nullptr, shaders.data());
+	for (auto shader : shaders)
+	{
+		int length;
+		glGetShaderiv(shader, GL_SHADER_SOURCE_LENGTH, &length);
+		std::vector<char> source(length);
+		glGetShaderSource(shader, length, nullptr, source.data());
+		int shaderType;
+		glGetShaderiv(shader, GL_SHADER_TYPE, &shaderType);
+		auto newShader = glCreateShader(shaderType);
+		if (shaderType == GL_VERTEX_SHADER)
+		{
+			vertexShader = newShader;
+		}
+		else if (shaderType == GL_FRAGMENT_SHADER)
+		{
+			fragmentShader = newShader;
+		}
+		const char *sourcePtr = source.data();
+		glShaderSource(newShader, 1, &sourcePtr, nullptr);
+		glCompileShader(newShader);
+		if (newShader)
+		{
+			glAttachShader(rendererID, newShader);
+		}
+	}
+	glLinkProgram(rendererID);
+}
+Shader::Shader(Shader &&shader) noexcept
+	: Shader()
+{
+	swap(shader, *this);
+}
+Shader &Shader::operator=(Shader shader)
+{
+	swap(shader, *this);
+	return *this;
+}
 Shader::~Shader()
 {
 	glDeleteProgram(rendererID);
+}
+void swap(Shader &shader_1, Shader &shader_2)
+{
+	using std::swap;
+	swap(shader_1.rendererID, shader_2.rendererID);
+	swap(shader_1.vertexShader, shader_2.vertexShader);
+	swap(shader_1.fragmentShader, shader_2.fragmentShader);
+	swap(shader_1.uniformLocationCache, shader_2.uniformLocationCache);
 }
 void Shader::Bind() const
 {
@@ -60,7 +112,7 @@ int Shader::GetUniformLocation(const std::string &name)
 const char *Shader::ParseShader(const std::string &filePath)
 {
 	std::stringstream ss;
-	std::ifstream ifs(std::string(PATH) + "/" + filePath);
+	std::ifstream ifs(std::format("{}/{}", PATH, filePath));
 	ss << ifs.rdbuf();
 	ifs.close();
 

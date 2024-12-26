@@ -17,6 +17,7 @@ class VertexBuffer;
 class Text
 {
   public:
+	Text() = delete;
 	static void Init(unsigned int screenWidth, unsigned int screenHeight);
 	static void LoadFont(const std::string &fontName, int fontHeight);
 	static void Render(const std::string &text, float x, float y, float scale, glm::vec3 color);
@@ -29,10 +30,10 @@ class Text
 		unsigned int advance;	// 原点距下一个字形原点的距离
 	};
 	static std::map<char, Character> Characters;
+	static glm::mat4 projection;
 
   private:
-	static VertexArray *vertexArray;
-	static VertexBuffer *vertexBuffer;
-	static Shader *shader;
-	static glm::mat4 projection;
+	static std::unique_ptr<VertexArray> vertexArray;
+	static std::unique_ptr<VertexBuffer> vertexBuffer;
+	static std::unique_ptr<Shader> shader;
 };

@@ -1,6 +1,9 @@
 #pragma once
 #include <string>
 #include "List.h"
+#include "FileManager.h"
+#include <ctime>
+#include <iomanip>
 
 class ScoreManager
 {
@@ -10,15 +13,17 @@ class ScoreManager
 	{
 	  public:
 		int score;
-		std::string userName;
-		ScoreInfo(int score, std::string userName)
-			: score(score), userName(userName) {}
+		std::tm dateTime;
+		ScoreInfo(std::tm dateTime, int score)
+			: dateTime(dateTime), score(score) {}
 		ScoreInfo() {}
 		bool operator<(const ScoreInfo &other)
 		{
 			return this->score < other.score;
 		}
 	};
-	static void Init() {}
+	static void Init();
+	static void AddScore(int score);
+	static int GetHighestScore();
 	static List<ScoreInfo> rankList;
 };

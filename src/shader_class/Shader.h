@@ -20,8 +20,13 @@ class Shader
 		VERTEX,
 		FRAGMENT
 	};
+	Shader() = default;
 	Shader(const std::string &vertexPath, const std::string &fragmentPath);
+	Shader(const Shader &shader);
+	Shader(Shader &&shader) noexcept;
+	Shader &operator=(Shader shader);
 	~Shader();
+	friend void swap(Shader &shader_1, Shader &shader_2);
 	void Bind() const;
 	void Unbind() const;
 	void SetUniform(const std::string &name, float v0, float v1, float v2, float v3);

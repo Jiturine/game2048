@@ -58,3 +58,4 @@ elseif(MINGW)
 endif()
 target_link_libraries(game2048 ${FREETYPE_LIBRARIES})
 
+install(TARGETS game2048 DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/build/bin)

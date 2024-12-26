@@ -17,16 +17,19 @@ class OpenGL
 	static std::string windowName;
 	static void Init(const unsigned int &screenWidth, const unsigned int &screenHeight, const std::string &windowName);
 	static void Update();
+	static void Render();
 	static bool ShouldClose();
 	static void Terminate();
 	static void MouseCallBack(GLFWwindow *window, double xpos, double ypos);
 	static void MouseButtonCallback(GLFWwindow *window, int button, int action, int mods);
-	static glm::vec3 cameraPosition;
+	static void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mods);
 	static glm::mat4 rotationMatrix;
+	static glm::vec3 cameraPosition;
 	static float deltaTime;
 
   private:
 	static constexpr float sensitivity = 0.05f; // 控制转动灵敏度
+	static constexpr float smoothenFactor = 0.9f;
 	static float lastTime;
 	static GLFWwindow *window;
 	static bool mouseDragging;
@@ -35,4 +38,5 @@ class OpenGL
 	static double lastY;
 	static float xoffset;
 	static float yoffset;
+	static bool fullScreen;
 };

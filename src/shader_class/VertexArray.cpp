@@ -4,9 +4,34 @@ VertexArray::VertexArray()
 {
 	glGenVertexArrays(1, &rendererID);
 }
+VertexArray::VertexArray(const VertexArray &vertexArray)
+{
+	glGenVertexArrays(1, &rendererID);
+	glBindBuffer(GL_COPY_READ_BUFFER, vertexArray.rendererID);
+	glBindBuffer(GL_COPY_WRITE_BUFFER, rendererID);
+	vertexArray.Bind();
+	int bufferSize;
+	glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &bufferSize);
+	glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, 0, 0, bufferSize);
+}
+VertexArray::VertexArray(VertexArray &&vertexArray) noexcept
+	: VertexArray()
+{
+	swap(vertexArray, *this);
+}
+VertexArray &VertexArray::operator=(VertexArray vertexArray)
+{
+	swap(vertexArray, *this);
+	return *this;
+}
 VertexArray::~VertexArray()
 {
 	glDeleteVertexArrays(1, &rendererID);
+}
+void swap(VertexArray &vertexArray_1, VertexArray &vertexArray_2)
+{
+	using std::swap;
+	swap(vertexArray_1.rendererID, vertexArray_2.rendererID);
 }
 void VertexArray::Bind() const
 {

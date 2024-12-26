@@ -3,7 +3,7 @@
 void Cube::Init()
 {
 	// 生成VBO，VAO
-	vertexArray = new VertexArray;
+	vertexArray = std::make_unique<VertexArray>();
 	vertexArray->Bind();
 	float vertices[] = {
 		// 上面
@@ -53,16 +53,16 @@ void Cube::Init()
 	};
 	unsigned int lineIndices[] =
 		{0, 1, 1, 2, 2, 3, 3, 0, 4, 5, 6, 7, 16, 17, 18, 19, 20, 21, 21, 22, 22, 23, 23, 20};
-	vertexBuffer = new VertexBuffer(vertices, sizeof(vertices));
+	vertexBuffer = std::make_unique<VertexBuffer>(vertices, sizeof(vertices));
 	VertexBufferLayout layout;
 	layout.Push<float>(3);
 	layout.Push<float>(2);
 	vertexArray->AddBuffer(*vertexBuffer, layout);
-	faceIndexBuffer = new IndexBuffer(faceIndices, 3 * 12);
-	lineIndexBuffer = new IndexBuffer(lineIndices, 2 * 12);
+	faceIndexBuffer = std::make_unique<IndexBuffer>(faceIndices, 3 * 12);
+	lineIndexBuffer = std::make_unique<IndexBuffer>(lineIndices, 2 * 12);
 	// 编译着色器
-	shader = new Shader("shaders/cube_shader/cube_vertex_shader.vs",
-						"shaders/cube_shader/cube_fragment_shader.fs");
+	shader = std::make_unique<Shader>("shaders/cube_shader/cube_vertex_shader.vs",
+									  "shaders/cube_shader/cube_fragment_shader.fs");
 	// 加载纹理
 	textures[0] = new Texture("resources/textures/0.png");
 	for (int i = 1; i <= 13; i++)
@@ -96,10 +96,10 @@ void Cube::Render(float x, float y, float z, float scale, int num)
 	Renderer::Draw(*vertexArray, *lineIndexBuffer, *shader, Renderer::DrawMode::Lines);
 }
 
-VertexArray *Cube::vertexArray;
-VertexBuffer *Cube::vertexBuffer;
-Shader *Cube::shader;
-IndexBuffer *Cube::faceIndexBuffer;
-IndexBuffer *Cube::lineIndexBuffer;
+std::unique_ptr<VertexArray> Cube::vertexArray;
+std::unique_ptr<VertexBuffer> Cube::vertexBuffer;
+std::unique_ptr<IndexBuffer> Cube::faceIndexBuffer;
+std::unique_ptr<IndexBuffer> Cube::lineIndexBuffer;
+std::unique_ptr<Shader> Cube::shader;
 Texture *Cube::textures[14];
 glm::mat4 Cube::transform;

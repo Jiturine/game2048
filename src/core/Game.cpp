@@ -3,6 +3,7 @@
 void Game::Init()
 {
 	srand(time(nullptr));
+	score = 0;
 	for (int i = 1; i <= 4; i++)
 		for (int j = 1; j <= 4; j++)
 			for (int k = 1; k <= 4; k++)
@@ -23,7 +24,6 @@ void Game::Init()
 	grid[i][j][k].num = 2;
 	grid[i][j][k].preNum = 2;
 	grid[i][j][k].indexOfNum = {i, j, k};
-	LOG_INFO("Init: {} {} {}", i, j, k);
 }
 
 // 绕X轴顺时针旋转90° (向X轴负方向看)
@@ -107,6 +107,17 @@ void Game::Update()
 	}
 	if (!inputKey)
 		return;
+	if (!numChanged)
+	{
+		numChanged = true;
+		for (int i = 1; i <= 4; i++)
+			for (int j = 1; j <= 4; j++)
+				for (int k = 1; k <= 4; k++)
+				{
+					grid[i][j][k].preNum = grid[i][j][k].num;
+					grid[i][j][k].indexOfNum = {i, j, k};
+				}
+	}
 	// 记录操作前的状态
 	static int recordNum[SIZE][SIZE][SIZE];
 	for (int i = 1; i <= 4; i++)
@@ -178,12 +189,6 @@ void Game::Update()
 					int y = grid[i][j][k].indexOfNum.y;
 					int z = grid[i][j][k].indexOfNum.z;
 					grid[x][y][z].targetIndex = {i, j, k};
-					if (i != x || j != y || k != z)
-					{
-						count++;
-						LOG_INFO("{} {} {} {} {} {}", x, y, z, i, j, k);
-					}
-
 					int mx = grid[i][j][k].indexOfMergedNum.x;
 					int my = grid[i][j][k].indexOfMergedNum.y;
 					int mz = grid[i][j][k].indexOfMergedNum.z;
@@ -191,9 +196,9 @@ void Game::Update()
 					grid[i][j][k].indexOfMergedNum = {0, 0, 0};
 				}
 			}
-	LOG_INFO(count);
 	// 检测是否有移动,并且有空位
-	bool changed = false, remain = false;
+	bool changed = false;
+	int remain = 0;
 	for (int i = 1; i <= 4; i++)
 	{
 		for (int j = 1; j <= 4; j++)
@@ -208,7 +213,7 @@ void Game::Update()
 				}
 				if (grid[i][j][k].num == 0)
 				{
-					remain = true;
+					remain++;
 				}
 			}
 			if (changed && remain)
@@ -217,26 +222,32 @@ void Game::Update()
 		if (changed && remain)
 			break;
 	}
-	// 满足条件，随机生成一个2或4
+	// 满足条件，随机生成若干个2或4
 	if (changed && remain)
 	{
-		int i, j, k;
-		do
+		int generateCount = remain / 28 + 1;
+		for (int p = 0; p < generateCount; p++)
 		{
-			i = rand() % 4 + 1;
-			j = rand() % 4 + 1;
-			k = rand() % 4 + 1;
-		} while (((i == 2 || i == 3) && (j == 2 || j == 3) && (k == 2 || k == 3)) || grid[i][j][k].num != 0);
-		// 80%生成2，20%生成4
-		grid[i][j][k].num = rand() % 5 ? 2 : 4;
-		grid[i][j][k].preNum = 0;
-		grid[i][j][k].indexOfNum = {i, j, k};
-		grid[i][j][k].targetIndex = {i, j, k};
+			int i, j, k;
+			do
+			{
+				i = rand() % 4 + 1;
+				j = rand() % 4 + 1;
+				k = rand() % 4 + 1;
+			} while (((i == 2 || i == 3) && (j == 2 || j == 3) && (k == 2 || k == 3)) || grid[i][j][k].num != 0);
+			// 80%生成2，20%生成4
+			grid[i][j][k].num = rand() % 5 ? 2 : 4;
+			grid[i][j][k].preNum = 0;
+			grid[i][j][k].indexOfNum = {i, j, k};
+			grid[i][j][k].targetIndex = {i, j, k};
+		}
 	}
 	// 判断游戏结束
 	if (!changed && !remain)
 	{
 		gameOver = true;
+		ScoreManager::AddScore(score);
+		SwitchState<GameOverState>();
 	}
 	inputKey = 0;
 	elapsedTime = 0;
@@ -303,40 +314,10 @@ void Game::Print()
 	std::cout << "\nscore: " << score << std::endl;
 }
 
-void Game::KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mods)
-{
-	if (action == GLFW_PRESS)
-	{
-		if (key == GLFW_KEY_W)
-		{
-			inputKey = 'w';
-		}
-		else if (key == GLFW_KEY_S)
-		{
-			inputKey = 's';
-		}
-		else if (key == GLFW_KEY_A)
-		{
-			inputKey = 'a';
-		}
-		else if (key == GLFW_KEY_D)
-		{
-			inputKey = 'd';
-		}
-		else if (key == GLFW_KEY_Q)
-		{
-			inputKey = 'q';
-		}
-		else if (key == GLFW_KEY_E)
-		{
-			inputKey = 'e';
-		}
-	}
-}
-
 Game::Grid Game::grid[SIZE][SIZE][SIZE];
 int Game::score;
 bool Game::gameOver;
 char Game::inputKey;
 float Game::elapsedTime;
 bool Game::numChanged;
+std::unique_ptr<GameState> Game::currentState;

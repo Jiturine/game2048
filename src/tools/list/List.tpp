@@ -2,9 +2,61 @@
 #include "List.h"
 
 template <class T>
+class List<T>::Node
+{
+  public:
+	T data;
+	Node *next;
+	Node(const T &data)
+		: data(data), next(nullptr) {}
+	Node(T &&data)
+		: data(std::move(data)), next(nullptr) {}
+	Node()
+		: data(), next(nullptr) {}
+};
+
+template <class T>
+class List<T>::Iterator
+{
+  private:
+	Node *current;
+
+  public:
+	Iterator(Node *node)
+		: current(node) {}
+	T &operator*()
+	{
+		return current->data;
+	}
+	Iterator &operator++()
+	{
+		if (current)
+		{
+			current = current->next;
+		}
+		return *this;
+	}
+	bool operator!=(const Iterator &other) const
+	{
+		return current != other.current;
+	}
+};
+
+template <class T>
+List<T>::Iterator List<T>::begin()
+{
+	return Iterator(head->next);
+}
+template <class T>
+List<T>::Iterator List<T>::end()
+{
+	return Iterator(nullptr);
+}
+
+template <class T>
 List<T>::List()
 {
-	head = new Node();
+	head = new Node;
 	tail = head;
 	size = 0;
 }
@@ -21,26 +73,27 @@ List<T>::~List()
 	}
 	delete head;
 }
-
 template <class T>
-template <class... Args>
-List<T>::List(const T &data, Args &&...args)
+template <class U, class... Args>
+	requires std::same_as<std::remove_cvref_t<U>, T>
+void List<T>::Add(U &&data, Args &&...args)
 {
-	head = new Node();
-	tail = head;
-	size = 0;
-	Add(data, args...);
-}
-
-template <class T>
-template <class... Args>
-void List<T>::Add(const T &data, Args &&...args)
-{
-	Node *p = new Node(data);
+	Node *p = new Node(std::forward<U>(data));
 	tail->next = p;
 	tail = p;
 	size++;
 	Add(args...);
+}
+
+template <class T>
+template <class U>
+	requires std::same_as<std::remove_cvref_t<U>, T>
+void List<T>::Add(U &&data)
+{
+	Node *p = new Node(std::forward<U>(data));
+	tail->next = p;
+	tail = p;
+	size++;
 }
 
 template <class T>
@@ -53,7 +106,8 @@ void List<T>::Insert(T data, int index)
 	{
 		p = p->next;
 	}
-	Node *q = new Node(data, p->next);
+	Node *q = new Node(data);
+	q->next = p->next;
 	p->next = q;
 	if (p == tail)
 	{
@@ -67,7 +121,7 @@ void List<T>::RemoveAt(int index)
 {
 	if (index > size)
 	{
-		return;
+		LOG_ERROR("Index out of range!");
 	}
 	Node *p = head;
 	for (int i = 1; i < index; i++)
@@ -81,7 +135,7 @@ void List<T>::RemoveAt(int index)
 }
 
 template <class T>
-void List<T>::Remove(T data)
+void List<T>::Remove(const T &data)
 {
 	Node *p = head;
 	bool find = false;
@@ -130,17 +184,4 @@ void List<T>::Sort()
 		}
 		end = p; // 记录上次排序的最后一个节点，优化效率
 	}
-}
-
-template <class T>
-List<T> *List<T>::Create()
-{
-	List<T> *p = new List<T>();
-	return p;
-}
-
-template <class T>
-void List<T>::Add()
-{
-	return;
 }
