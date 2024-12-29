@@ -1,15 +1,15 @@
 #pragma once
 
-#include <string>
 #include <iostream>
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include <map>
+#include <memory>
 #include <glm/glm.hpp>
 #include <glm/ext/matrix_clip_space.hpp>
 #include "Shader.h"
 #include "VertexArray.h"
-#include "Log.h"
+#include "SysConfig.h"
 
 class VertexArray;
 class VertexBuffer;

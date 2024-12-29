@@ -23,6 +23,7 @@ void ScoreManager::AddScore(int score)
 	std::tm *localTime = std::localtime(&currentTime);
 	ScoreManager::rankList.Add(ScoreManager::ScoreInfo(*localTime, score));
 	ScoreManager::rankList.Sort();
+	ScoreManager::rankList.RemoveToTen();
 	std::ofstream ofs(FileManager::GetPersistentDataPath() + "/historyScore.txt");
 	for (auto data : rankList)
 	{

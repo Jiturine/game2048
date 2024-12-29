@@ -23,6 +23,7 @@ class List
 	void Insert(T data, int index);
 	void RemoveAt(int index);
 	void Remove(const T &data);
+	void RemoveToTen();
 	void Sort();
 
 	class Iterator;

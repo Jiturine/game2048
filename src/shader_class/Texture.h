@@ -1,10 +1,9 @@
 #pragma once
 #include <stb_image.h>
 #include <glad/glad.h>
-#include <string>
 #include <filesystem>
-#include "SysConfig.h"
 #include "Log.h"
+#include "SysConfig.h"
 
 class Texture
 {

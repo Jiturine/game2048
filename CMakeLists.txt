@@ -1,16 +1,15 @@
 cmake_minimum_required (VERSION 3.8)
-project ("game2048")
+project (game2048)
 
 set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED)
 
 FILE(GLOB_RECURSE PIXEL_FILES   
                     ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp
                     ${CMAKE_CURRENT_SOURCE_DIR}/src/*.c
                     )
 
-if( ${CMAKE_VERSION} VERSION_GREATER_EQUAL 3.16 )
-    set ( CMAKE_UNITY_BUILD_BATCH_SIZE 16 )
-endif()
+set ( CMAKE_UNITY_BUILD_BATCH_SIZE 16 )
 
 SET(RW_DATA_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 configure_file (
@@ -19,9 +18,9 @@ configure_file (
   )
 
 link_directories(${CMAKE_CURRENT_SOURCE_DIR}/deps/opengl/libs)
-link_directories(${CMAKE_CURRENT_SOURCE_DIR}/deps/freetype/lib)
 
 add_executable (game2048 ${PIXEL_FILES})
+
 
 MACRO( collect_head_dirs return_list )
     FILE(GLOB_RECURSE new_list 
@@ -42,7 +41,6 @@ collect_head_dirs( src_header_dirs )
 
 target_include_directories ( game2048 PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/deps/opengl/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/deps/freetype/include
     ${CMAKE_CURRENT_SOURCE_DIR}/deps/spdlog/include
     ${src_header_dirs}
     ${CMAKE_CURRENT_SOURCE_DIR}/sysconfig

@@ -2,6 +2,7 @@
 #include "Game.h"
 
 template <class T>
+	requires std::is_base_of_v<GameState, T>
 void Game::SwitchState()
 {
 	if (currentState != nullptr)

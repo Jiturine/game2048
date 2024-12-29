@@ -1,9 +1,8 @@
 #pragma once
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/gtx/string_cast.hpp>
-#include "Renderer.h"
-#include "Log.h"
 #include <memory>
+#include "Renderer.h"
 
 class VertexArray;
 class VertexBuffer;

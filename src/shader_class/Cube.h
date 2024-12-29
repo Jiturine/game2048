@@ -3,8 +3,6 @@
 #include <glm/gtx/string_cast.hpp>
 #include "Renderer.h"
 #include "Texture.h"
-#include "Log.h"
-#include <memory>
 
 class VertexArray;
 class VertexBuffer;

@@ -4,6 +4,7 @@
 #include <random>
 #include <iostream>
 #include <iomanip>
+#include <concepts>
 #include "OpenGL.h"
 #include "GameState.h"
 #include "StartState.h"
@@ -35,6 +36,7 @@ class Game
 	static void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mods);
 	static std::unique_ptr<GameState> currentState;
 	template <class T>
+		requires std::is_base_of_v<GameState, T>
 	static void SwitchState();
 	static float easing(float t)
 	{

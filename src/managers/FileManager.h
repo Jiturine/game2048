@@ -1,10 +1,9 @@
 #pragma once
-
-#include <format>
 #include <iostream>
 #include <fstream>
 #include <iostream>
 #include <filesystem>
+#include <format>
 
 class FileManager
 {

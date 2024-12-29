@@ -159,11 +159,33 @@ void List<T>::Remove(const T &data)
 	return;
 }
 
+template <class T>
+void List<T>::RemoveToTen()
+{
+	Node *p = head;
+	for (int i = 0; i < 10; i++)
+	{
+		if (p->next != nullptr)
+		{
+			p = p->next;
+		}
+		else
+		{
+			return;
+		}
+	}
+	if (p->next != nullptr)
+	{
+		delete p->next;
+		p->next = nullptr;
+	}
+}
+
 // 降序冒泡排序
 template <class T>
 void List<T>::Sort()
 {
-	struct Node *p, *q, *end = nullptr;
+	Node *p, *q, *end = nullptr;
 	while (head->next != end)
 	{
 		p = head->next;		   // 从未排序的第一个节点开始

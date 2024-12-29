@@ -5,7 +5,6 @@
 #include "Game.h"
 #include "OpenGL.h"
 #include "Text.h"
-#include "Log.h"
 #include "Cube.h"
 
 constexpr unsigned int SCREEN_WIDTH = 1920;
